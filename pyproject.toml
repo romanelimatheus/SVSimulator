@@ -1,5 +1,5 @@
 [project]
-name = "yMMS"
+name = "SV Simulator"
 version = "0.1.0"
 authors = [
     {name = "Matheus", email = "mlima1324@gmail.com"},
@@ -7,6 +7,10 @@ authors = [
 description = "Implementation of Sampled Values IEC61850 packet fuzzer"
 readme = "README.md"
 requires-python = ">=3.10"
+
+dependencies = [
+  "PyQt6",
+]
 
 [project.optional-dependencies]
 dev = [

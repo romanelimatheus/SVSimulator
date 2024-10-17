@@ -5,6 +5,9 @@ install-dev:
 	$(bin)/python -m pip install uv
 	$(bin)/uv pip install -e .[dev]
 
+install-deps:
+	sudo apt-get update && sudo apt-get install libegl1 -y
+
 pytest:
 	$(bin)/pytest .
 
@@ -18,3 +21,6 @@ mypy:
 	$(bin)/mypy .
 
 qa: pytest ruff mypy
+
+run:
+	$(bin)/python -m src.__main__
