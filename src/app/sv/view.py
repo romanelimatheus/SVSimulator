@@ -1,5 +1,4 @@
-from app.sv.form_dialog import SVFormView
-from app.sv.model import SVModel
+from app.sv import SVModel
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QTableWidget, QVBoxLayout, QWidget
 
@@ -40,6 +39,8 @@ class SVView(QWidget):
 
         self.sv_table = QTableWidget()
         self.sv_table.itemClicked.connect(self.sv_table_item_clicked)
+        self.sv_table.setColumnCount(5)
+        self.sv_table.setHorizontalHeaderLabels(["Destination MAC", "Source MAC", "VLAN ID", "VLAN Priority", "APP_ID"])
         main_form = QVBoxLayout()
         main_form.addLayout(button_form)
         main_form.addWidget(self.sv_table)
