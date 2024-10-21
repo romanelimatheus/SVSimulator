@@ -1,6 +1,6 @@
 from socket import if_nameindex
 
-from app.sv import SVModel, SVPresenter, SVView
+from app.sv import SVPresenter, SVView
 from PyQt6.QtWidgets import QComboBox, QDialog, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
 from services import Fuzzer
 
@@ -34,7 +34,7 @@ class MainWindow(QDialog):
         form.addWidget(self.start_stop_button)
 
         self.sv_view = SVView()
-        self.sv_presenter = SVPresenter(SVModel, self.sv_view)
+        self.sv_presenter = SVPresenter(self.sv_view)
         self.sv_view.show()
 
         layout = QVBoxLayout()

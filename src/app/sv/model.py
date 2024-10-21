@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QTableWidgetItem
 
 
@@ -29,13 +30,36 @@ class SVModel(QTableWidgetItem):
     conf_rev: int
     smp_synch: int
 
+    vlan_enabled: bool = False
+
     vlan_id: int | None = None
     vlan_priority: int | None = None
+
+    dataset_enabled: bool = False
     dataset: str | None = None
+
+    smp_rate_enabled: bool = False
     smp_rate: int | None = None
+
+    smp_mode_enabled: bool = False
     smp_mode: int | None = None
 
     no_asdu: int = 1
+
+    def __post_init__(self: "SVModel") -> None:
+        super().__init__()
+        self.setData(Qt.ItemDataRole.UserRole, self)
+
+    def data(self: "SVModel", role: int) -> str:
+        mapping = {
+            0: self.dst_mac,
+            1: self.src_mac,
+            2: self.app_id,
+            3: str(self.simulation),
+            8: self.sv_id,
+        }
+        print(role, mapping.get(role, ""))
+        return mapping.get(role, "")
 
     @classmethod
     def default(cls: type["SVModel"]) -> "SVModel":

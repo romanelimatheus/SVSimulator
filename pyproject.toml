@@ -1,5 +1,5 @@
 [project]
-name = "SV Simulator"
+name = "SVSimulator"
 version = "0.1.0"
 authors = [
     {name = "Matheus", email = "mlima1324@gmail.com"},
