@@ -43,10 +43,8 @@ class SVFormPresenter(QObject):
 
 
     def submit(self: "SVFormPresenter") -> None:
-        print("SUBMIT")
         self.view.accept()
         self.submit_signal.emit(self.model)
 
     def on_field_changed(self: "SVFormPresenter", field: SVFields, value: str | bool) -> None:
         self.model.__setattr__(field.value, value)
-        print(self.model.__dict__)

@@ -20,7 +20,7 @@ class SVFields(Enum):
     SMP_MODE = "smp_mode"
 
 @dataclass
-class SVModel(QTableWidgetItem):
+class SVModel:
     dst_mac: str
     src_mac: str
 
@@ -45,21 +45,6 @@ class SVModel(QTableWidgetItem):
     smp_mode: int | None = None
 
     no_asdu: int = 1
-
-    def __post_init__(self: "SVModel") -> None:
-        super().__init__()
-        self.setData(Qt.ItemDataRole.UserRole, self)
-
-    def data(self: "SVModel", role: int) -> str:
-        mapping = {
-            0: self.dst_mac,
-            1: self.src_mac,
-            2: self.app_id,
-            3: str(self.simulation),
-            8: self.sv_id,
-        }
-        print(role, mapping.get(role, ""))
-        return mapping.get(role, "")
 
     @classmethod
     def default(cls: type["SVModel"]) -> "SVModel":

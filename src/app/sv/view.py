@@ -8,7 +8,6 @@ class SVView(QWidget):
 
     def __init__(self: "SVView") -> None:
         super().__init__()
-        self.current_item = None
         self.setup_ui()
 
     def setup_ui(self: "SVView") -> None:
