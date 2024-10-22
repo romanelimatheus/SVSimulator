@@ -17,6 +17,9 @@ class SVFormPresenter(QObject):
 
         self.view.dst_mac.textChanged.connect(lambda: self.on_field_changed(SVFields.DST_MAC, self.view.dst_mac.text()))
         self.view.src_mac.textChanged.connect(lambda: self.on_field_changed(SVFields.SRC_MAC, self.view.src_mac.text()))
+        self.view.vlan_form.toggled.connect(
+            lambda: self.on_field_changed(SVFields.VLAN_ENABLED, self.view.vlan_form.isChecked()),
+        )
         self.view.vlan_id.textChanged.connect(lambda: self.on_field_changed(SVFields.VLAN_ID, self.view.vlan_id.text()))
         self.view.vlan_priority.textChanged.connect(
             lambda: self.on_field_changed(SVFields.VLAN_PRIORITY, self.view.vlan_priority.text()),
@@ -42,10 +45,22 @@ class SVFormPresenter(QObject):
             lambda: self.on_field_changed(SVFields.SMP_MODE, self.view.smp_mode.currentText()),
         )
 
+        self.view.dataset_enabled.toggled.connect(
+            lambda: self.on_field_changed(SVFields.DATASET_ENABLED, self.view.dataset_enabled.isChecked()),
+        )
+        self.view.smp_rate_enabled.toggled.connect(
+            lambda: self.on_field_changed(SVFields.SMP_RATE_ENABLED, self.view.smp_rate_enabled.isChecked()),
+        )
+        self.view.smp_mode_enabled.toggled.connect(
+            lambda: self.on_field_changed(SVFields.SMP_MODE_ENABLED, self.view.smp_mode_enabled.isChecked()),
+        )
+
 
     def submit(self: "SVFormPresenter") -> None:
         self.view.accept()
         self.submit_signal.emit(self.model)
 
     def on_field_changed(self: "SVFormPresenter", field: SVFields, value: str | bool) -> None:
+        if field.value.endswith("_enabled"):
+            value = bool(value)
         self.model.__setattr__(field.value, value)

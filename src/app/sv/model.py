@@ -1,13 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QTableWidgetItem
-
 
 class SVFields(Enum):
     DST_MAC = "dst_mac"
     SRC_MAC = "src_mac"
+    VLAN_ENABLED = "vlan_enabled"
     VLAN_ID = "vlan_id"
     VLAN_PRIORITY = "vlan_priority"
     APP_ID = "app_id"
@@ -16,8 +14,11 @@ class SVFields(Enum):
     CONF_REV = "conf_rev"
     SMP_SYNCH = "smp_synch"
     DATASET = "dataset"
+    DATASET_ENABLED = "dataset_enabled"
     SMP_RATE = "smp_rate"
+    SMP_RATE_ENABLED = "smp_rate_enabled"
     SMP_MODE = "smp_mode"
+    SMP_MODE_ENABLED = "smp_mode_enabled"
 
 @dataclass
 class SVModel:
@@ -49,11 +50,11 @@ class SVModel:
     @classmethod
     def default(cls: type["SVModel"]) -> "SVModel":
         return cls(
-            src_mac="ff:ff:ff:ff:ff:ff",
-            dst_mac="ff:ff:ff:ff:ff:ff",
-            app_id="xxxx",
+            src_mac="",
+            dst_mac="",
+            app_id="",
             simulation=False,
-            sv_id="xxxx",
+            sv_id="",
             conf_rev=0,
             smp_synch=0,
         )

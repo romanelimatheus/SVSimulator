@@ -1,6 +1,4 @@
-from app.sv import SVModel
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QTableWidget, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QAbstractItemView, QHBoxLayout, QPushButton, QTableWidget, QVBoxLayout, QWidget
 
 
 class SVView(QWidget):
@@ -19,6 +17,7 @@ class SVView(QWidget):
         button_form.addWidget(self.add_button)
 
         self.sv_table = QTableWidget()
+        self.sv_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.sv_table.setColumnCount(5)
         self.sv_table.setHorizontalHeaderLabels(["Destination MAC", "Source MAC", "VLAN ID", "VLAN Priority", "APP_ID"])
 
