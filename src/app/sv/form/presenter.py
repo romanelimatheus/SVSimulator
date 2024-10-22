@@ -10,6 +10,7 @@ class SVFormPresenter(QObject):
         super().__init__()
         self.model = model
         self.view = view
+        self.view.setup_model(model)
 
         self.view.button_box.accepted.connect(self.submit)
         self.view.button_box.rejected.connect(self.view.reject)

@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QTableWidget, QVBoxLayout,
 
 
 class SVView(QWidget):
-    form_data_collected = pyqtSignal(SVModel)
 
     def __init__(self: "SVView") -> None:
         super().__init__()

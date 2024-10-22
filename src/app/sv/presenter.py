@@ -19,7 +19,6 @@ class SVPresenter(QObject):
         self.view.edit_button.clicked.connect(self.edit_button_clicked)
         self.view.add_button.clicked.connect(self.add_button_clicked)
         self.view.sv_table.itemClicked.connect(self.sv_table_item_clicked)
-        self.view.form_data_collected.connect(self.form_dialog)
 
     def delete_button_clicked(self: "SVPresenter") -> None:
         if self.current_item is not None:
@@ -29,10 +28,19 @@ class SVPresenter(QObject):
 
     def edit_button_clicked(self: "SVPresenter") -> None:
         if self.current_item is not None:
-            self.view.form_data_collected.emit(self.current_item)
+            model = self.current_item
+            presenter = SVFormPresenter(model=model, view=SVFormView(parent=self.view))
+            result = presenter.view.exec()
+            if result == QDialog.DialogCode.Accepted:
+                self.current_item = model
+                self.update_row(self.current_row, model)
 
     def add_button_clicked(self: "SVPresenter") -> None:
-        self.view.form_data_collected.emit(SVModel.default())
+        model = SVModel.default()
+        presenter = SVFormPresenter(model=model, view=SVFormView(parent=self.view))
+        result = presenter.view.exec()
+        if result == QDialog.DialogCode.Accepted:
+            self.add_item(model)
 
     def sv_table_item_clicked(self: "SVPresenter", item: QTableWidgetItem) -> None:
         self.current_item = self.items[item.row()]
@@ -42,14 +50,11 @@ class SVPresenter(QObject):
         self.items.append(item)
         row_count = self.view.sv_table.rowCount()
         self.view.sv_table.insertRow(row_count)
-        self.view.sv_table.setItem(row_count, 0, QTableWidgetItem(item.dst_mac))
-        self.view.sv_table.setItem(row_count, 1, QTableWidgetItem(item.src_mac))
-        self.view.sv_table.setItem(row_count, 2, QTableWidgetItem(item.vlan_id))
-        self.view.sv_table.setItem(row_count, 3, QTableWidgetItem(item.vlan_priority))
-        self.view.sv_table.setItem(row_count, 4, QTableWidgetItem(item.sv_id))
+        self.update_row(row_count, item)
 
-    def form_dialog(self: "SVPresenter", model: SVModel) -> None:
-        presenter = SVFormPresenter(model=model, view=SVFormView(parent=self.view))
-        result = presenter.view.exec()
-        if result == QDialog.DialogCode.Accepted:
-            self.add_item(model)
+    def update_row(self: "SVPresenter", row: int, item: SVModel) -> None:
+        self.view.sv_table.setItem(row, 0, QTableWidgetItem(item.dst_mac))
+        self.view.sv_table.setItem(row, 1, QTableWidgetItem(item.src_mac))
+        self.view.sv_table.setItem(row, 2, QTableWidgetItem(item.vlan_id))
+        self.view.sv_table.setItem(row, 3, QTableWidgetItem(item.vlan_priority))
+        self.view.sv_table.setItem(row, 4, QTableWidgetItem(item.sv_id))

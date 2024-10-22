@@ -1,4 +1,4 @@
-from app.sv.model import SVFields
+from app.sv.model import SVFields, SVModel
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import (
@@ -33,6 +33,20 @@ class SVFormView(QDialog):
         layout.addWidget(scroll_area)
         layout.addWidget(self.button_box)
         self.setLayout(layout)
+
+    def setup_model(self: "SVFormView", model: SVModel) -> None:
+        self.dst_mac.setText(model.dst_mac)
+        self.src_mac.setText(model.src_mac)
+        self.vlan_id.setText(model.vlan_id)
+        self.vlan_priority.setText(model.vlan_priority)
+        self.app_id.setText(model.app_id)
+        self.simulation.setChecked(bool(model.simulation))
+        self.sv_id.setText(model.sv_id)
+        self.conf_rev.setText(str(model.conf_rev))
+        self.smp_synch.setCurrentText(str(model.smp_synch))
+        self.dataset.setText(model.dataset)
+        self.smp_rate.setText(str(model.smp_rate))
+        self.smp_mode.setCurrentText(str(model.smp_mode))
 
     def fields_layout(self: "SVFormView") -> QWidget:
         widget = QWidget()
