@@ -18,7 +18,7 @@ class MainWindow(QDialog):
         return self.interface_input.currentText()
 
     def start(self: "MainWindow") -> None:
-        self.fuzzer.start(self.iface)
+        self.fuzzer.start(self.iface, self.sv_presenter.items)
 
     def setup_ui(self: "MainWindow") -> None:
         self.interface_input = QComboBox()
