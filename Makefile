@@ -5,8 +5,13 @@ install-dev:
 	$(bin)/python -m pip install uv
 	$(bin)/uv pip install -e .[dev]
 
+sudo-install:
+	sudo $(bin)/python -m pip install uv
+	sudo $(bin)/uv pip install -e .[dev]
+
 install-deps:
-	sudo apt-get update && sudo apt-get install libegl1 -y
+	sudo apt-get update && sudo apt-get install -y --no-install-recommends libegl1
+	sudo apt install libxcb-cursor0
 
 pytest:
 	$(bin)/pytest .
@@ -23,4 +28,4 @@ mypy:
 qa: pytest ruff mypy
 
 run:
-	$(bin)/python -m src.__main__
+	sudo $(bin)/python -m src.__main__

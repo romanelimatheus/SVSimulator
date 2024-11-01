@@ -55,6 +55,4 @@ class SVPresenter(QObject):
     def update_row(self: "SVPresenter", row: int, item: SVModel) -> None:
         self.view.sv_table.setItem(row, 0, QTableWidgetItem(item.dst_mac))
         self.view.sv_table.setItem(row, 1, QTableWidgetItem(item.src_mac))
-        self.view.sv_table.setItem(row, 2, QTableWidgetItem(item.vlan_id))
-        self.view.sv_table.setItem(row, 3, QTableWidgetItem(item.vlan_priority))
-        self.view.sv_table.setItem(row, 4, QTableWidgetItem(item.sv_id))
+        self.view.sv_table.setItem(row, 2, QTableWidgetItem(item.sv_id))
