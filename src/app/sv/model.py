@@ -50,11 +50,11 @@ class SVModel:
     @classmethod
     def default(cls: type["SVModel"]) -> "SVModel":
         return cls(
-            src_mac="",
-            dst_mac="",
-            app_id="",
+            src_mac="ffffffffffff",
+            dst_mac="ffffffffffff",
+            app_id="4000",
             simulation=False,
-            sv_id="",
+            sv_id="asdf",
             conf_rev=0,
             smp_synch=0,
         )
