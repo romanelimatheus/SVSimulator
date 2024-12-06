@@ -18,8 +18,15 @@ class SVView(QWidget):
 
         self.sv_table = QTableWidget()
         self.sv_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.sv_table.setColumnCount(3)
-        self.sv_table.setHorizontalHeaderLabels(["Destination MAC", "Source MAC", "SVid"])
+        self.sv_table.setColumnCount(6)
+        self.sv_table.setHorizontalHeaderLabels([
+            "Destination MAC",
+            "Source MAC",
+            "APP ID",
+            "SV ID",
+            "ConfRev",
+            "SmpSynch",
+        ])
 
         main_form = QVBoxLayout()
         main_form.addLayout(button_form)

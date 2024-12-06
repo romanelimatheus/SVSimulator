@@ -32,7 +32,7 @@ line-length = 120
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D203", "D213", "FA102", "FIX002"]
+ignore = ["D203", "D213", "FA102", "FIX002", "S311"]
 extend-ignore = ["D"]  # temporary
 
 [tool.ruff.lint.per-file-ignores]

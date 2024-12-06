@@ -55,4 +55,7 @@ class SVPresenter(QObject):
     def update_row(self: "SVPresenter", row: int, item: SVModel) -> None:
         self.view.sv_table.setItem(row, 0, QTableWidgetItem(item.dst_mac))
         self.view.sv_table.setItem(row, 1, QTableWidgetItem(item.src_mac))
-        self.view.sv_table.setItem(row, 2, QTableWidgetItem(item.sv_id))
+        self.view.sv_table.setItem(row, 2, QTableWidgetItem(item.app_id))
+        self.view.sv_table.setItem(row, 3, QTableWidgetItem(item.sv_id))
+        self.view.sv_table.setItem(row, 4, QTableWidgetItem(item.conf_rev))
+        self.view.sv_table.setItem(row, 5, QTableWidgetItem(item.smp_synch))
