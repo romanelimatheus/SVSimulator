@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from app.sv.model import SVModel
 from pysn1.triplet import Triplet
 from pysv.c_package import _publisher, _send_default_sv, c_pub
-from pysv.sv import SamplesSynchronized, SVConfig, generate_sv_from, parse_neutral, parse_sample, read_sample
+from pysv.sv import SamplesSynchronized, SVConfig, parse_neutral, parse_sample, read_sample
 from utils.threaded import threaded
 
 if TYPE_CHECKING:
@@ -33,7 +33,7 @@ class Fuzzer:
         if self.process is not None:
             self.stop()
             return
-        logger.critical("Starting fuzzer...")
+        logger.info("Starting fuzzer...")
         self.process = Process(target=self.sender, args=(iface, sv_list))
         self.process.start()
         self.process.join()
@@ -42,7 +42,7 @@ class Fuzzer:
     def stop(self: "Fuzzer") -> None:
         if self.process is None:
             return
-        logger.critical("Stopping fuzzer...")
+        logger.info("Stopping fuzzer...")
         self.process.terminate()
         self.process = None
 
@@ -79,8 +79,6 @@ class Fuzzer:
                 new_config.conf_rev = randint(0, 0xffff)
             if randint(0, 100) <= mutation_field:
                 new_config.smp_sync = SamplesSynchronized(randint(0, 2))
-        # if config.__dict__ != new_config.__dict__:
-        #     logger.critical("Mutated config: %s", new_config)
         return new_config
 
     def generate_mutated_sv(
@@ -97,7 +95,6 @@ class Fuzzer:
         previous_sleep_time = decimal.Decimal(0)
         for index, (sleep_time, i_as, i_bs, i_cs, v_as, v_bs, v_cs) in enumerate(read_sample(path)):
             new_config = self.mutate_config(sv_config, mutation_rating, mutation_field)
-            logger.critical("Diff(new|old): %s | %s", new_config, sv_config)
             dst_mac = new_config.dst_mac_bytes
             src_mac = new_config.src_mac_bytes
             ether_type = b"\x88\xba"
@@ -132,19 +129,16 @@ class Fuzzer:
             seq_asdu = bytes(Triplet.build(tag=0xa2, value=asdu))
             sav_pdu = bytes(Triplet.build(tag=0x60, value=no_asdu + seq_asdu))
 
-            # TODO @arthurazs: improve length calc (it should always be the same)
             length = pack("!H", len(sav_pdu) + 8)
             sv = app_id + length + reserved1 + reserved2 + sav_pdu
 
-            # TODO @arthurazs: maybe return header and sv separately, so i can pass the header only once to C
             yield int(time2sleep), smp_cnt_int, header + sv
 
 
 
     def publisher_default(self: "Fuzzer", iface: str, config: SVConfig) -> None:
         socket_num, interface_index = _publisher(iface)
-        logger.critical("Sending SV frames...")
+        logger.info("Sending SV frames...")
         for time2sleep, _, sv in self.generate_mutated_sv(config, Path("data/default_phs_meas.csv")):
-            # logger.critical("%s ... bytes: %s", config.sv_id, sv)
             _send_default_sv(socket_num, interface_index, c_pub.send_sv, sv, 1, len(sv), time2sleep)
         c_pub.close_socket(socket_num)
