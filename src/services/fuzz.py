@@ -24,9 +24,9 @@ class Fuzzer:
     process: Process | None = None
 
     def sender(self: "Fuzzer", iface: str, sv_list: list[SVModel]) -> None:
-        for sv in sv_list:
-            t = self.send(iface, sv)
-            t.join()
+        threads = [self.send(iface, sv) for sv in sv_list]
+        for thread in threads:
+            thread.join()
 
     @threaded
     def start(self: "Fuzzer", iface: str, sv_list: list[SVModel]) -> None:
@@ -72,7 +72,7 @@ class Fuzzer:
             if randint(0, 100) <= mutation_field:
                 new_config.src_mac = str(randint(0, 0xffffffffffff))
             if randint(0, 100) <= mutation_field:
-                new_config.app_id = str(hex(randint(0, 0x7fff))[2:])
+                new_config.app_id = str(hex(randint(0, 0x9fff))[2:])
             if randint(0, 100) <= mutation_field:
                 new_config.sv_id = config.sv_id + "_mutated"
             if randint(0, 100) <= mutation_field:
@@ -124,7 +124,9 @@ class Fuzzer:
             smp_cnt_int = int(index % frequency)
             smp_cnt = bytes(Triplet.build(tag=0x82, value=pack("!H", smp_cnt_int)))
             phs_meas = bytes(Triplet.build(tag=0x87, value=i_a + i_b + i_c + i_n + v_a + v_b + v_c + v_n))
-            asdu = bytes(Triplet.build(tag=0x30, value=sv_id + smp_cnt + conf_rev + smp_sync + phs_meas))
+            asdu_fields = [sv_id, smp_cnt, conf_rev, smp_sync]
+            asdu_header = b"".join(field for field in asdu_fields if randint(0, 100) <= mutation_field)
+            asdu = bytes(Triplet.build(tag=0x30, value=asdu_header + phs_meas))
 
             seq_asdu = bytes(Triplet.build(tag=0xa2, value=asdu))
             sav_pdu = bytes(Triplet.build(tag=0x60, value=no_asdu + seq_asdu))
@@ -133,8 +135,6 @@ class Fuzzer:
             sv = app_id + length + reserved1 + reserved2 + sav_pdu
 
             yield int(time2sleep), smp_cnt_int, header + sv
-
-
 
     def publisher_default(self: "Fuzzer", iface: str, config: SVConfig) -> None:
         socket_num, interface_index = _publisher(iface)
