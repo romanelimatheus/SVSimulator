@@ -61,35 +61,39 @@ class Fuzzer:
     def mutate_config(
         self: "Fuzzer", config: SVConfig, mutation_rating: int = 5, mutation_field: int = 20,
     ) -> SVConfig:
-        if mutation_rating not in range(1,101,1):
-            msg = "mutation_rating must be between 1 and 100"
+        if mutation_rating not in range(0,101,1) or mutation_field not in range(0,101,1):
+            msg = "mutation must be between 0 and 100"
             raise ValueError(msg)
         new_config = SVConfig(**config.__dict__) # copy config
-        if randint(0, 100) <= mutation_rating:
+        if randint(1, 100) <= mutation_rating:
         # Chance to mutate packet
-            if randint(0, 100) <= mutation_field:
-                new_config.dst_mac = str(randint(0, 0xffffffffffff))
-            if randint(0, 100) <= mutation_field:
-                new_config.src_mac = str(randint(0, 0xffffffffffff))
-            if randint(0, 100) <= mutation_field:
-                new_config.app_id = str(hex(randint(0, 0x9fff))[2:])
-            if randint(0, 100) <= mutation_field:
+            if randint(1, 100) <= mutation_field:
+                new_config.dst_mac = str(randint(1, 0xffffffffffff))
+            if randint(1, 100) <= mutation_field:
+                new_config.src_mac = str(randint(1, 0xffffffffffff))
+            if randint(1, 100) <= mutation_field:
+                new_config.app_id = str(hex(randint(1, 0x9fff))[2:])
+            if randint(1, 100) <= mutation_field:
                 new_config.sv_id = config.sv_id + "_mutated"
-            if randint(0, 100) <= mutation_field:
-                new_config.conf_rev = randint(0, 0xffff)
-            if randint(0, 100) <= mutation_field:
-                new_config.smp_sync = SamplesSynchronized(randint(0, 2))
+            if randint(1, 100) <= mutation_field:
+                new_config.conf_rev = randint(1, 0xffff)
+            if randint(1, 100) <= mutation_field:
+                new_config.smp_sync = SamplesSynchronized(randint(1, 2))
         return new_config
 
     def generate_mutated_sv(
         self: "Fuzzer",
         sv_config: SVConfig,
         path: Path,
-        mutation_rating: int = 50,
+        mutation_rating: int = 10,
         mutation_field: int = 20,
+        mutation_omit: int = 0,
         frequency:int = 4000,
     ) -> "Iterator[tuple[int, int, bytes]]":
 
+        if mutation_omit not in range(0,101,1):
+            msg = "mutation_omit must be between 0 and 100"
+            raise ValueError(msg)
         no_asdu = b"\x80\x01\x01"
 
         previous_sleep_time = decimal.Decimal(0)
@@ -125,7 +129,7 @@ class Fuzzer:
             smp_cnt = bytes(Triplet.build(tag=0x82, value=pack("!H", smp_cnt_int)))
             phs_meas = bytes(Triplet.build(tag=0x87, value=i_a + i_b + i_c + i_n + v_a + v_b + v_c + v_n))
             asdu_fields = [sv_id, smp_cnt, conf_rev, smp_sync]
-            asdu_header = b"".join(field for field in asdu_fields if randint(0, 100) <= mutation_field)
+            asdu_header = b"".join(field for field in asdu_fields if randint(1, 100) >= mutation_omit)
             asdu = bytes(Triplet.build(tag=0x30, value=asdu_header + phs_meas))
 
             seq_asdu = bytes(Triplet.build(tag=0xa2, value=asdu))
