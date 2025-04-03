@@ -85,8 +85,8 @@ class Fuzzer:
         self: "Fuzzer",
         sv_config: SVConfig,
         path: Path,
-        mutation_rating: int = 10,
-        mutation_field: int = 20,
+        mutation_rating: int = 0,
+        mutation_field: int = 0,
         mutation_omit: int = 0,
         frequency:int = 4000,
     ) -> "Iterator[tuple[int, int, bytes]]":
